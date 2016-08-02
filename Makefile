@@ -41,7 +41,6 @@ default: 3Dec 3Dec-train
 ifeq ($(dependency),included)
 obj_linear = tron.o linear.o blas.a
 CPPFLAGS += -I./include/liblinear  
-DEFINES += -D_linear_2
 
 $(obj_linear) : ./include/liblinear/train
 	cp ./include/liblinear/$@ $(BUILDDIR)/
@@ -85,7 +84,7 @@ $(objects) $(target:=.o): %.o: %.cpp $(header) Makefile
 
 .PHONY: clean
 clean:
-	rm -f $(target:%=$(BINDIR)/%) *~ *.o  *.obj  *.exe *.lib ./*.lis $(MANDIR)/*.1 $(MANDIR)/*.1.html $(BUILDDIR)/*
+	rm -f $(target:%=$(BINDIR)/%) *~ *.o  *.obj  *.exe *.lib ./*.lis $(MANDIR)/*.1 $(MANDIR)/*.1.html $(BUILDDIR)/*.*
 	$(MAKE) -C include/liblinear  clean
 	find . -name "*.log" -exec rm {} \;
 

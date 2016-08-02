@@ -1,0 +1,8 @@
+
+
+07/31/2016:
+Add an empty file in ./build to keep the folder existing on github. Also modified the clean command in makefile so that the empty file won't be removed when typing make clean;
+
+By default use liblinear-2.0+ in 3Dec-train, instead of 1.8;
+
+Modify the Readme file, and add an example for 3Dec-trian.

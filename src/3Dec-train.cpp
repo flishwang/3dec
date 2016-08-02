@@ -13,7 +13,6 @@ one at http://creativecommons.org/licenses/by-nc-sa/4.0/
 
 #ifdef _WIN32
 #include "../include/liblinear/linear.h"
-#define _linear_2
 #else
 #include <linear.h>
 #endif
@@ -79,13 +78,13 @@ void trainfq(Cif &in, string samname,string outname)
 	n = n > maxnode ? maxnode : n;
 	mylong m = 0;
 	feature = new struct feature_node *[n];
-#ifdef _linear_2
+#ifdef _linear_1
+	int32_t *y;
+	y = new int32_t[n];
+#else
 	double *y;
 	y = new double[n];
 	param.init_sol=NULL;
-#else
-	int32_t *y;
-	y = new int32_t[n];
 #endif
 	mylong mtk=0;
 	for (mylong i = 0; i < n; i++)
