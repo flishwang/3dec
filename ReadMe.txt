@@ -2,16 +2,16 @@ Copyright (c) 2015, Bo Wang, Academy of Mathematics and Systems Science,
 Chinese Academy of Sciences, Beijing 100190, China
 	
 3Dec User Guide
-Note that the Module for quality scores has not been fully investigated yet. We will update it 
-in future versions.
+Please note that the Module for quality scores has not been fully investigated yet. We will 
+update it in future versions.
 Please contact Bo Wang (flish_wang@sina.com) for any problems, bugs or suggestions.
 
-	Usage
+	3Dec
 		Pre-requisite for Operating systems:
 			The executable files were built under Ubuntu 14.01 LTS and tested to work well on
 			Redhat Enterprise 7.2(Maipo). However, We do not guarentee that they run as expected
 			on other systems, especially lower-version ones. If the executable files did not work,
-			please re-build them from the source codes or contact me for help.
+			please re-build them from the source codes or contact us for help.
 		
 		To run the base caller, execute the binary file 3Dec.linux (under Linux) or 3Dec 
 		(built from source code).
@@ -20,8 +20,9 @@ Please contact Bo Wang (flish_wang@sina.com) for any problems, bugs or suggestio
 		
 		
 	3Dec-train:
+		This module has not been fully investigated yet. Be careful when using it.
 		3Dec-train is used to train new model for Phred quality scores. The default model
-		3Dec uses was trained based on the first tile in BlindCall Hiseq2000 PhiX  dataset 
+		3Dec uses was trained based on the first tile in BlindCall Hiseq2000 PhiX dataset 
 		(distributed with paper PMID 24413520). Training the model requires an entire tile, 
 		in which all reads should have a known reference. Mismatches between short reads and 
 		reference will result in underestimating the quality scores.
@@ -35,9 +36,9 @@ Please contact Bo Wang (flish_wang@sina.com) for any problems, bugs or suggestio
 		
 		For example, if one would like to train the model using the first tile of the BlindCall
 		dataset, he/she should follow these steps:
-			1) Download the dataset (links are provided in "Test data"), and unpack i;
+			1) Download the dataset (links are provided in "Test data"), and unpack it;
 			2) Install an sequence alignment software, such as bowtie2, or BWA;
-			3) Get the bacteriophage PhiX174 reference, which is provided by NCBI;
+			3) Download the bacteriophage PhiX174 reference, which is provided in NCBI;
 			4) Run 3Dec with arguments -q -t to generate the intensity file and fastq file:
 				$ 3Dec -q -t -f -s -c 1,101 --osubfix _clean -i ./PhiX174_UMD_HiSeq_201305/Data/Intensities/L004 s_4_1113
 			then two files s_4_1113_clean.cif and s_4_1113_clean.fastq will be generated;
@@ -48,8 +49,12 @@ Please contact Bo Wang (flish_wang@sina.com) for any problems, bugs or suggestio
 				$ 3Dec-train s_4_1113_clean s_4_1113_clean s_4_1113.sam s_4_1113.model
 			Then the coefficients of the model will be stored in the file s_4_1113.model, which can
 			be used in 3Dec by the argument "-m s_4_1113.model".
-			
-			
+	locs2pos
+		locs2txt converts the cluster location file in "locs" format into plain text (_pos.txt format).
+		Details see locs2pos/Readme.txt
+		Please notice that though 3Dec supports _pos.txt, it has not been tested on Miseq data yet. 
+		Unexpected results may occur in this version. Use it on Miseq data CAREFULLY.
+		
 	Building & Installation from source codes
 		The makefile works under Linux (Ubuntu and Redhat). Current version may not 
 		support other OSs well.
@@ -123,6 +128,62 @@ Please contact Bo Wang (flish_wang@sina.com) for any problems, bugs or suggestio
 			(GAII Phix174 dataset)
 			$ 3Dec -q -f -L -i ./GAII-ABCtoy -o outputfolder s+
 
+Manuals (printed by "3Dec --help")
+
+Type "3Dec --help" to show the help.
+Usage:
+3Dec [options]* {-t -q | -r} <name|pattern> [name|pattern]* ...
+    -t    outputs spatial-crosstalk-corrected CIF files.
+    -q    outputs called sequences in Fastq format.
+    -r    outputs called sequences in Fastq format, re-estimating matrices 
+          after correcting spatial crosstalk (slower but more accurate). 
+   name   Specifies the tile name to be processed.
+ pattern  A pattern XYZ+ specifies all tile names beginning with XYZ.
+
+Options:
+    -l    Specifies the subfix (or the expand name) of 
+          input location files in the next input arguments(Default .clocs)
+    -L    short for [-l _pos.txt].
+    -s    inputs CIFs are seperated (eg. when input Illumina Runfolder):
+          each cycle in a subfolder.(Default: input intensities from a
+          single file.)
+    -S    outputs CIFs are seperated. Will be ignored for [-q] or [-r].
+          (Default: outputs intensities in a single CIF file.)
+    -e    Specifies the total ends.(Default: only one end.) Data are 
+          processed independently for each ends.
+    -c    specifies the begin and end cycle for each ends in the next
+          arguments. Must be set after [-e]. Eg. [-c 1,101,102,109,110,210]
+          specifies the cycles for the 3 ends of [-e 3].
+    -i    specifies the input directory in the next arguments. Default:
+          current folder.
+    -o    specifies the output directory in the next arguments. Default:
+          current folder.
+    -m    specifies the .model file used for Phred-Score prediction. Details
+          see the help of 3Dec-train.
+    -n    does not correct ACC if -q or -t.
+    -f    reduces iteration for latter blocks when estimating phasing. This
+          will reduce calculation time while slightly reducing the accuracy.
+    -p    specifies the processes used. Default: OPENMP default value.
+    --inpath    the same as [-i].
+    --loctype   the same as [-l].
+    --outpath   the same as [-o].
+    --version   print 3Dec version.
+    --inprefix  prefix for input
+    --oprefix   prefix for output
+    --insubfix  subfix for input
+    --osubfix   subfix for output
+          Arguments following the four commands specifies the extra part of 
+          input and output CIF(fastq) files' names comparing with location files'
+          names. The four argument adds prefix or subfix to the I/O files' names.
+
+Examples:
+  3Dec -i ./L001 -o ./output -q s_1_1101 s_1_12+
+  This command reads location file s_1_1101.clocs in directory ./L001, then reads CIF file s_4_1101.cif in the same direcotory, and then do the base-calling and output s_4_1101.fastq in directory ./output. Then it searches the directory ./L001 for all files with the name pattern s_1_12*.clocs, and reads the cif file with the same tile name and write fastq files in ./output.
+
+  3Dec -i ./L001 -o ./L001 -s -S -c 1,101 -t s+
+  This command searches the directory ./L001 for all location files with the name pattern s*.clocs, then for each location file sA.clocs, it reads seperated CIF files ./L001/C1.1/sA.cif, ./L001/C2.1/sA.cif, ... , ./L001/C101.1/sA.cif, and correct spatial crosstalk for them and then write the corrected CIF files back (overwrite the original files).
+			
+			
 Licence
 	3Dec is subject to  Creative Commons Attribution-NonCommercial-ShareAlike 4.0 
 	International Public License. A copy of the licence is attached with the software. You can 

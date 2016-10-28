@@ -36,7 +36,7 @@ target = oacc cacc bsca 3Dec 3Dec-train
 VPATH = $(SRCDIR):$(LIBDIR):$(BUILDDIR):$(BINDIR)
 
 .PHONY: default
-default: 3Dec 3Dec-train
+default: 3Dec 3Dec-train locs2pos/locs2pos
 
 ifeq ($(dependency),included)
 obj_linear = tron.o linear.o blas.a
@@ -52,7 +52,8 @@ endif
 
 obj_all= $(objects) $(obj_linear)
 
-
+locs2pos/locs2pos :
+	$(MAKE) -C ./locs2pos
 .PHONY: all
 all: $(target)
 
