@@ -66,8 +66,8 @@ void putusage(int mode=0)
     cout<<"3Dec [options]* {-t -q | -r} <name|pattern> [name|pattern]* ...\n";
     cout<<"    -t    outputs spatial-crosstalk-corrected CIF files.\n";
     cout<<"    -q    outputs called sequences in Fastq format.\n";
-    cout<<"    -r    outputs called sequences in Fastq format after re-base-calling\n";
-    cout<<"          ACC-corrected intensity data. \n";
+    cout<<"    -r    outputs called sequences in Fastq format, re-estimating matrices\n";
+    cout<<"          after correcting spatial crosstalk (slower but more accurate).\n";
     cout<<"   name   Specifies the tile name to be processed.\n";
     cout<<" pattern  A pattern XYZ+ specifies all tile names beginning with XYZ.\n\n";
     cout<<"Options:\n";
