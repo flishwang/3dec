@@ -20,7 +20,9 @@ Please contact Bo Wang (flish_wang@sina.com) for any problems, bugs or suggestio
 		
 		
 	3Dec-train:
-		This module has not been fully investigated yet. Be careful when using it.
+		This module has not been fully investigated yet. 3Dec can implement the 
+		base-calling scheme without this file. We keep it here just for an option.
+		Be careful when using it.
 		3Dec-train is used to train new model for Phred quality scores. The default model
 		3Dec uses was trained based on the first tile in BlindCall Hiseq2000 PhiX dataset 
 		(distributed with paper PMID 24413520). Training the model requires an entire tile, 
