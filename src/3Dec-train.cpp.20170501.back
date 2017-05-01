@@ -137,7 +137,7 @@ void trainfq(Cif &in, string samname,string outname)
 			else if (ci == 'I')
 			{
 				for (int32_t k = 0; k < j; k++)
-					match[cj] =-1, cj++;
+					match[cj] =1+ !matchvalue, cj++,unmatched++;
 				j = 0;
 			}
 			else if (ci == 'D')
@@ -150,7 +150,7 @@ void trainfq(Cif &in, string samname,string outname)
 				if (ci == 'A' || ci == 'C' || ci == 'G' || ci == 'T')
 					match[cj] = 1+!matchvalue, cj++,unmatched++;
 				else if (ci == 'N')
-					match[cj] = -1, cj++;
+					match[cj] = 1+!matchvalue, cj++,unmatched++;
 				else if (ci == '^')
 					while ((buffer[i + 1] <= 'Z'&&buffer[i + 1] >= 'A') || (buffer[i + 1] <= 'z'&&buffer[i + 1] >= 'a'))
 						i++, ci = buffer[i];
@@ -196,7 +196,6 @@ void trainfq(Cif &in, string samname,string outname)
 		
 	
 		for (mylong j = 0; j < mycyc; j++)
-		if(match[inverse?mycyc-1-j:j]>0)
 		{
 			int32_t mm = 0;
 			
