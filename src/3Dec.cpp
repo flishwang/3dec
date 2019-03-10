@@ -96,6 +96,7 @@ void putusage(int mode=0)
 		cout << "    -f    reduces iteration for latter blocks when estimating phasing. This\n";
 		cout << "          will reduce calculation time while slightly reducing the accuracy.\n";
 		cout << "    -p    specifies the processes used. Default: OPENMP default value.\n";
+		cout << "    -z    output CIF file after correct color&phase crosstalk\n";
 		cout << "    --inpath    the same as [-i].\n";
 		cout << "    --loctype   the same as [-l].\n";
 		cout << "    --outpath   the same as [-o].\n";
@@ -125,7 +126,7 @@ void putusage(int mode=0)
 	{
 		cout << "    Followed with its args: -l -e -c -i -o -m -p --inpath --loctype\n";
 		cout << "                            --outpath --(in/o)prefix --insubfix\n";
-		cout << "    Other options:          -L -s -S -n -f --version\n";
+		cout << "    Other options:          -L -s -S -n -f -z --version\n";
 		cout << "Details of the options see the help documencation.\n";
 	}
 }
@@ -251,7 +252,7 @@ int analyseargs(int args, char * argv[],Paras &par)
                     i++,par.inprefix=rmquote(argv[i]);
                 else if(!strcmp(argv[i],"--insubfix"))
                     i++,par.insubfix=rmquote(argv[i]);
-		else if(!strcmp(argv[i],"--oprebfix"))
+		        else if(!strcmp(argv[i],"--oprebfix"))
                     i++,par.oprefix=rmquote(argv[i]);
                 else if(!strcmp(argv[i],"--osubfix"))
                     i++,par.osubfix=rmquote(argv[i]);
@@ -347,6 +348,9 @@ int analyseargs(int args, char * argv[],Paras &par)
                             break;
                         case 't':
                             par.ocif=1;
+                            break;
+                        case 'z':
+                            par.oinnercif=1;
                             break;
                         case 'q':
                             par.ofastq=1;
@@ -444,6 +448,10 @@ int main(int args, char *argv[])
             {
                 locread(par,name,ll);
                 z1.basecalling(z1,par.iters);
+                if (par.oinnercif){
+                    	par.osubfix=cnsubfix+(string)"_inner";
+                    	z1.write(par,name,cycles[j][0]);
+                    }
 				if (!par.donothing)
 					correct_acc(z1,z1,ll);
                 if(par.totalend>1)
@@ -464,6 +472,10 @@ int main(int args, char *argv[])
 				{
 					locread(par, name, ll);
 					z1.basecalling(z1, par.iters);
+					if (par.oinnercif){
+                    	par.osubfix=cnsubfix+(string)"_inner";
+                    	z1.write(par,name,cycles[j][0]);
+                    }
 					correct_acc(z1, z1, ll);
 					if (par.totalend>1)
 					{
@@ -513,6 +525,10 @@ int main(int args, char *argv[])
                 if(par.oiter)
                 {
                     z1.basecalling(z1,par.iters);
+                    if (par.oinnercif){
+                    	par.osubfix=cnsubfix+(string)"_inner";
+                    	z1.write(par,name,cycles[j][0]);
+                    }
                     if(par.totalend>1)
                     {
                         char num[10];

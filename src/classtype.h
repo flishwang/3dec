@@ -63,6 +63,7 @@ public:
         osubfix="";
 		iters = 4;
         ocif=0;
+        oinnercif=0;
         ofastq=0;
         oiter=0;
 	donothing = 0;
@@ -73,6 +74,7 @@ public:
     int currentend;
     int totalend;
 	int iters;
+    bool oinnercif;
     string loctype;
     string inpath,outpath;
     string inprefix;

@@ -372,14 +372,15 @@ void basecall::solve(int cb,int calright,int writedata)
     zoo=zcyc.middleRows(zoostart,zoowidth);
     
         #ifdef _test2
-            int tt=45786;
+            int tt=25786;
             int checkblock=1;
         #endif
         #ifdef _test2
             if(cnblock==0&&cb==checkblock){
             tmp.resize(zoowidth,4);
+            cout <<"zoowidth,zoo.size "<<zoowidth <<' ' << zoo.size()<<endl;
             tmp<<zoo.col(tt),zoo.col(size[dcluster]+tt),zoo.col(size[dcluster]*2+tt),zoo.col(size[dcluster]*3+tt);
-                cout<<"Iter "<<currentiter<<" cluster 45786 block:(Primary)"<<cb<<"\n"<<tmp.topRows(11).transpose()<<endl;}
+                cout<<"Iter "<<currentiter<<" cluster 45786 block:(Primary)"<<cb<<"\n"<<tmp.topRows(8).transpose()<<endl;}
         #endif
     
     minusconstant(zoostart,zoo);
@@ -388,7 +389,7 @@ void basecall::solve(int cb,int calright,int writedata)
             if(cnblock==0&&cb==checkblock){
                 tmp.resize(zoowidth,4);
                 tmp<<zoo.col(tt),zoo.col(size[dcluster]+tt),zoo.col(size[dcluster]*2+tt),zoo.col(size[dcluster]*3+tt);
-                cout<<"Iter "<<currentiter<<" cluster 45786 block:(MinusConstant)"<<cb<<"\n"<<tmp.topRows(11).transpose()<<endl;}
+                cout<<"Iter "<<currentiter<<" cluster 45786 block:(MinusConstant)"<<cb<<"\n"<<tmp.topRows(8).transpose()<<endl;}
         #endif
     
     zco=zoo.middleRows(blockstart[cb]-zoostart,blocklength[cb]);
@@ -407,7 +408,7 @@ void basecall::solve(int cb,int calright,int writedata)
             if(cnblock==0&&cb==checkblock){
                 tmp.resize(zoowidth,4);
                 tmp<<zoo.col(tt),zoo.col(size[dcluster]+tt),zoo.col(size[dcluster]*2+tt),zoo.col(size[dcluster]*3+tt);
-                cout<<"Iter "<<currentiter<<" cluster 45786 block:(Corret Color)"<<cb<<"\n"<<tmp.topRows(11).transpose()<<endl;}
+                cout<<"Iter "<<currentiter<<" cluster 45786 block:(Corret Color)"<<cb<<"\n"<<tmp.topRows(8).transpose()<<endl;}
         #endif
             
     tmp=MatrixXf::Zero(zoowidth,zoowidth);
@@ -435,14 +436,14 @@ void basecall::solve(int cb,int calright,int writedata)
     
         #ifdef _test
             if(cnblock==0&&cb==checkblock)
-            cout<<"TMP MATRIX:"<<cb<<" width:"<<zoowidth<<endl<<tmp.topLeftCorner(9,9)<<"\n\n"<<tmp.bottomRightCorner(9,11).leftCols(9)<<endl;
+            cout<<"TMP MATRIX:"<<cb<<" width:"<<zoowidth<<endl<<tmp.topLeftCorner(8,8)<<"\n\n"<<tmp.bottomRightCorner(8,8).leftCols(8)<<endl;
         #endif
     
     tmp=tmp.inverse();
     
         #ifdef _test
             if(cnblock==0&&cb==checkblock)
-            cout<<"TMP INVERSE MATRIX:"<<cb<<" width:"<<zoowidth<<endl<<tmp.topLeftCorner(9,9)<<"\n\n"<<tmp.bottomRightCorner(9,11).leftCols(9)<<endl;
+            cout<<"TMP INVERSE MATRIX:"<<cb<<" width:"<<zoowidth<<endl<<tmp.topLeftCorner(8,8)<<"\n\n"<<tmp.bottomRightCorner(8,8).leftCols(8)<<endl;
         #endif
     
     zoo=tmp.middleRows(blockstart[cb]-zoostart,blocklength[cb])*zoo;
@@ -450,9 +451,9 @@ void basecall::solve(int cb,int calright,int writedata)
     
         #ifdef _test2
             if(cnblock==0&&cb==checkblock){
-                tmp.resize(zoowidth,4);
+                tmp.resize(blocklength[cb],4);
                 tmp<<zoo.col(tt),zoo.col(size[dcluster]+tt),zoo.col(size[dcluster]*2+tt),zoo.col(size[dcluster]*3+tt);
-                cout<<"Iter "<<currentiter<<" cluster 45786 block:(Correct phasing)"<<cb<<" delay "<<blockstart[cb]-zoostart<<"\n"<<tmp.topRows(11).transpose()<<endl;}
+                cout<<"Iter "<<currentiter<<" cluster 45786 block:(Correct phasing)"<<cb<<" delay "<<blockstart[cb]-zoostart<<"\n"<<tmp.topRows(8).transpose()<<endl;}
         #endif
     
     if(currentiter==itertime-1&&writedata)
@@ -582,9 +583,8 @@ void basecall::correctneighbour()
     for(int kk=0;kk<size[dchn]*size[dchn];kk++)
     {
         int i=kk/size[dchn],j=kk%size[dchn];
-        
-        float mysum=0,mywidth=0;
         float mymean=mb.mean();
+        float mysum=mymean,mywidth=1;
         for(int k=0;k<size[dcluster];k++)
             if(idx.coeff(0,k)==i&&idx.coeff(1,k)==j&&mb.coeff(k)>mymean/2&&mb.coeff(k)<mymean*2)
                 mysum+=mb.coeff(k),mywidth+=lambda(k,0);
@@ -692,7 +692,7 @@ int basecall::pipe()
         }
         
         zcyc=zresult;
-        correctneighbour();
+    //    correctneighbour();
         data.block(cnstart*size[dcyc],0,size[dcluster]*size[dcyc],size[dchn])=zchn;
     }
 
